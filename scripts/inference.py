@@ -1,5 +1,5 @@
 import argparse
-import os
+import os, time
 from omegaconf import OmegaConf
 import numpy as np
 import cv2
@@ -34,15 +34,35 @@ def main(args):
         output_basename = f"{input_basename}_{audio_basename}"
         result_img_save_path = os.path.join(args.result_dir, output_basename) # related to video & audio inputs
         crop_coord_save_path = os.path.join(result_img_save_path, input_basename+".pkl") # only related to video input
+        
+        if os.path.exists(result_img_save_path):
+            shutil.rmtree(result_img_save_path)
+            print(f"delete dir {result_img_save_path}")
+        
+        if os.path.exists(crop_coord_save_path):
+            shutil.rmtree(crop_coord_save_path)
+            print(f"delete dir {crop_coord_save_path}")
+
+
         os.makedirs(result_img_save_path,exist_ok =True)
+
+        print('inference.result', result_img_save_path, crop_coord_save_path)
         
         if args.output_vid_name=="":
             output_vid_name = os.path.join(args.result_dir, output_basename+".mp4")
         else:
             output_vid_name = os.path.join(args.result_dir, args.output_vid_name)
+
+        if os.path.exists(output_vid_name):
+            print(f'delete file {output_vid_name}')
+            os.remove(output_vid_name)
+
         ############################################## extract frames from source video ##############################################
         if get_file_type(video_path)=="video":
             save_dir_full = os.path.join(args.result_dir, input_basename)
+            if os.path.exists(save_dir_full):
+                shutil.rmtree(save_dir_full)
+                print(f"delete dir {save_dir_full}")
             os.makedirs(save_dir_full,exist_ok = True)
             cmd = f"ffmpeg -v fatal -i {video_path} -start_number 0 {save_dir_full}/%08d.png"
             os.system(cmd)
@@ -116,15 +136,15 @@ def main(args):
             cv2.imwrite(f"{result_img_save_path}/{str(i).zfill(8)}.png",combine_frame)
             
         cmd_img2video = f"ffmpeg -y -v fatal -r {fps} -f image2 -i {result_img_save_path}/%08d.png -vcodec libx264 -vf format=rgb24,scale=out_color_matrix=bt709,format=yuv420p -crf 18 temp.mp4"
-        print(cmd_img2video)
+        print('cmd_img2video', cmd_img2video)
         os.system(cmd_img2video)
         
         cmd_combine_audio = f"ffmpeg -y -v fatal -i {audio_path} -i temp.mp4 {output_vid_name}"
-        print(cmd_combine_audio)
+        print('cmd_combine_audio', cmd_combine_audio)
         os.system(cmd_combine_audio)
         
         os.remove("temp.mp4")
-        shutil.rmtree(result_img_save_path)
+        # shutil.rmtree(result_img_save_path)
         print(f"result is save to {output_vid_name}")
 
 if __name__ == "__main__":
