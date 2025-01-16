@@ -1,0 +1,32 @@
+{
+  "name": "server-cosyvoice",
+  "version": "0.1.0",
+  "title": "CosyVoice-M300模型",
+  "description": "基于CosyVoice模型+M300模型的模型，支持声音合成、声音克隆功能",
+  "platformName": "__ENV__",
+  "platformArch": "__ARCH__",
+  "entry": "launcher",
+  "launcher": {
+    "entry": "./_aienv/bin/python",
+    "entryArgs": [
+      "webui.py"
+    ],
+    "envs": [
+      "AAA=111",
+      "BBB=222"
+    ]
+  },
+  "functions": [
+    "soundClone",
+    "soundTts"
+  ],
+  "settings": [
+    {
+      "name": "port",
+      "type": "text",
+      "title": "服务端口",
+      "defaultValue": "",
+      "placeholder": "留空会检测使用随机端口"
+    }
+  ]
+}
