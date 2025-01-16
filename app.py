@@ -3,7 +3,11 @@ import gradio as gr
 import re
 import subprocess
 
+os.environ["GRADIO_SHARE"] = "false"
+os.environ["GRADIO_ANALYTICS_ENABLED"] = "false"
+
 def process_files(image, audio, length):
+
     # 这里 image 和 audio 为文件的路径
     print('app.process_files', image, audio, length)
     if os.path.exists(image + '.mp4'):
@@ -75,4 +79,4 @@ iface = gr.Interface(
     <b>请上传视频和音频文件，并设置嘴巴张开度来生成视频。</b>""")
 
 # 启动应用
-iface.launch(inbrowser=False, share=False)
+iface.launch(inbrowser=False, share=False, quiet=True)

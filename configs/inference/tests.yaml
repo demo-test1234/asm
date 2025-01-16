@@ -1,0 +1,6 @@
+task_0:
+ video_path: ./tests/sun.mp4
+ audio_path: ./tests/yongen.wav
+ bbox_shift: -7
+  
+

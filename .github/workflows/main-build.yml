@@ -1,0 +1,84 @@
+name: Build
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+          include:
+#              - os: ubuntu-latest
+#                arch: [arm64, amd64]
+              - os: macos-latest
+                arch: [arm64, amd64]
+#              - os: windows-latest
+#                arch: [amd64]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Code Prepare
+        run: git submodule update --init --recursive
+
+      - name: Setup Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniconda-version: "latest"
+          activate-environment: "test"
+          python-version: 3.8
+          auto-activate-base: false
+
+      - name: Build
+        if: runner.os == 'macOS'
+        run: |
+          ./_aigcpanel/build-osx.sh
+
+      - name: Build
+        if: runner.os == 'Linux'
+        run: |
+          ./_aigcpanel/build-linux.sh
+
+      - name: Build
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          ./_aigcpanel/build-win.ps1
+
+      - name: Set Build Name ( Linux / macOS )
+        if: runner.os == 'Linux' || runner.os == 'macOS'
+        run: |
+          DIST_FILE_NAME=${{ runner.os }}-${{ runner.arch }}-v$(date +%Y%m%d_%H%M%S)-${RANDOM}
+          echo ::add-mask::$DIST_FILE_NAME
+          echo DIST_FILE_NAME=$DIST_FILE_NAME >> $GITHUB_ENV
+
+      - name: Set Build Name ( Windows )
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $randomNumber = Get-Random -Minimum 10000 -Maximum 99999
+          $DIST_FILE_NAME = "Windows-X64-v$(Get-Date -Format 'yyyyMMdd_HHmmss')-$randomNumber"
+          Write-Host "::add-mask::$DIST_FILE_NAME"
+          echo "DIST_FILE_NAME=$DIST_FILE_NAME" >> $env:GITHUB_ENV
+
+      - name: Upload
+        uses: modstart/github-oss-action@master
+        with:
+
+          title: ${{ github.event.head_commit.message }}
+          key-id: ${{ secrets.OSS_KEY_ID }}
+          key-secret: ${{ secrets.OSS_KEY_SECRET }}
+          region: ${{ secrets.OSS_REGION }}
+          bucket: ${{ secrets.OSS_BUCKET }}
+          callback: ${{ secrets.OSS_CALLBACK }}
+          assets: |
+            *.zip:models/${{ env.DIST_FILE_NAME }}/
+
+
+

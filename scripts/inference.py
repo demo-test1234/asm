@@ -8,6 +8,7 @@ import glob
 import pickle
 from tqdm import tqdm
 import copy
+import sys
 
 from musetalk.utils.utils import get_file_type,get_video_fps,datagen
 from musetalk.utils.preprocessing import get_landmark_and_bbox,read_imgs,coord_placeholder
@@ -19,6 +20,8 @@ import shutil
 audio_processor,vae,unet,pe  = load_all_model()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 timesteps = torch.tensor([0], device=device)
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append('{}/binary'.format(ROOT_DIR))
 
 @torch.no_grad()
 def main(args):
@@ -85,8 +88,10 @@ def main(args):
         else:
             print("extracting landmarks...time consuming")
             coord_list, frame_list = get_landmark_and_bbox(input_img_list, bbox_shift)
+            print("save extracted coordinates")
             with open(crop_coord_save_path, 'wb') as f:
                 pickle.dump(coord_list, f)
+            print("save extracted coordinates done")
                 
         i = 0
         input_latent_list = []

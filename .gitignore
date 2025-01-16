@@ -1,5 +1,13 @@
 !.gitignore
 .idea/
 /_aienv/
-/models/
+#/models/
 wget-log
+__pycache__/
+/binary/
+/models/
+/launcher
+/launcher.exe
+/configs/inference/test2.yaml
+/results/
+

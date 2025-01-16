@@ -26,12 +26,12 @@ wget https://huggingface.co/stabilityai/sd-vae-ft-mse/resolve/main/diffusion_pyt
 wget https://huggingface.co/stabilityai/sd-vae-ft-mse/resolve/main/config.json -P ./models/sd-vae-ft-mse/
 wget https://openaipublic.azureedge.net/main/whisper/models/65147644a518d12f04e32d6f3b26facc3f8dd46e5390956a9424a650c0ce22b9/tiny.pt -P ./models/whisper/
 wget https://huggingface.co/yzd-v/DWPose/resolve/main/dw-ll_ucoco_384.pth -P ./models/dwpose/
-wget https://github.com/zllrunning/face-parsing.PyTorch/releases/download/iter/79999_iter.pth -P ./models/face-parse-bisent/
 wget https://download.pytorch.org/models/resnet18-5c106cde.pth -P ./models/face-parse-bisent/
 # 初始化环境
 
 # 启动服务
 # python webui.py
+# python -m scripts.inference --inference_config configs/inference/tests.yaml
 # 启动服务
 
 # 清除文件
@@ -46,6 +46,6 @@ rm -rfv requirements.txt || true
 # 打包服务
 VERSION=$(python -m _aigcpanel.build)
 echo "VERSION: ${VERSION}"
-zip -rv "./aigcpanel-server-cosyvoice-${VERSION}.zip" * -x "_aigcpanel/*"
+zip -rv "./aigcpanel-server-musetalk-${VERSION}.zip" * -x "_aigcpanel/*"
 # 打包服务
 
