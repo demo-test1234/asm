@@ -1,31 +1,20 @@
 {
-  "name": "server-cosyvoice",
+  "name": "server-MuseTalk",
   "version": "0.1.0",
-  "title": "CosyVoice-M300模型",
-  "description": "基于CosyVoice模型+M300模型的模型，支持声音合成、声音克隆功能",
-  "platformName": "__ENV__",
-  "platformArch": "__ARCH__",
-  "entry": "launcher",
-  "launcher": {
-    "entry": "./_aienv/bin/python",
-    "entryArgs": [
-      "webui.py"
-    ],
-    "envs": [
-      "AAA=111",
-      "BBB=222"
-    ]
-  },
+  "title": "MuseTalk模型",
+  "description": "基于MuseTalk模型的模型，支持视频合成功能",
+  "platformName": "win",
+  "platformArch": "x86",
+  "entry": "server/main",
   "functions": [
-    "soundClone",
-    "soundTts"
+    "videoGen"
   ],
   "settings": [
     {
       "name": "port",
       "type": "text",
       "title": "服务端口",
-      "defaultValue": "",
+      "default": "",
       "placeholder": "留空会检测使用随机端口"
     }
   ]
