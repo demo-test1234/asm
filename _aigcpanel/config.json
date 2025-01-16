@@ -1,11 +1,21 @@
 {
   "name": "server-MuseTalk",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "title": "MuseTalk模型",
   "description": "基于MuseTalk模型的模型，支持视频合成功能",
-  "platformName": "win",
-  "platformArch": "x86",
-  "entry": "server/main",
+  "platformName": "__ENV__",
+  "platformArch": "__ARCH__",
+  "entry": "launcher",
+  "launcher": {
+    "entry": "./_aienv/bin/python",
+    "entryArgs": [
+      "webui.py"
+    ],
+    "envs": [
+      "AAA=111",
+      "BBB=222"
+    ]
+  },
   "functions": [
     "videoGen"
   ],
