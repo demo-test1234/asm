@@ -16,6 +16,7 @@ mim install "mmengine==0.10.3"
 mim install "mmcv==2.1.0"
 mim install "mmdet==3.2.0"
 mim install "mmpose==1.3.1"
+pip install gradio==4.26.0 --no-deps
 New-Item -ItemType Directory -Force -Path ./models/musetalk/
 New-Item -ItemType Directory -Force -Path ./models/sd-vae-ft-mse/
 New-Item -ItemType Directory -Force -Path ./models/whisper/

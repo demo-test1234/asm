@@ -19,6 +19,7 @@ mim install "mmengine==0.10.3"
 mim install "mmcv==2.1.0"
 mim install "mmdet==3.2.0"
 mim install "mmpose==1.3.1"
+pip install gradio==4.26.0 --no-deps
 
 wget https://huggingface.co/TMElyralab/MuseTalk/resolve/main/musetalk/pytorch_model.bin -P ./models/musetalk/
 wget https://huggingface.co/TMElyralab/MuseTalk/resolve/main/musetalk/musetalk.json -P ./models/musetalk/
