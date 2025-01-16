@@ -35,11 +35,8 @@ wget https://download.pytorch.org/models/resnet18-5c106cde.pth -P ./models/face-
 # 启动服务
 
 # 清除文件
-rm -rfv build || true
-rm -rfv dist || true
 rm -rfv asset || true
 rm -rfv *.md || true
-rm -rfv download_model.py || true
 rm -rfv requirements.txt || true
 # 清除文件
 
