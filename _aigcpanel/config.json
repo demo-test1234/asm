@@ -9,7 +9,8 @@
   "launcher": {
     "entry": "./_aienv/bin/python",
     "entryArgs": [
-      "webui.py"
+      "-u",
+      "app.pyc"
     ],
     "envs": [
       "AAA=111",

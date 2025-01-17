@@ -10,4 +10,7 @@ __pycache__/
 /launcher.exe
 /configs/inference/test2.yaml
 /results/
+*.pyc
+/logs/
+/_aienv.backup/
 

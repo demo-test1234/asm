@@ -19,7 +19,7 @@ mim install "mmengine==0.10.3"
 mim install "mmcv==2.1.0"
 mim install "mmdet==3.2.0"
 mim install "mmpose==1.3.1"
-pip install gradio==3.20.0
+pip install gradio==3.50.2
 
 wget https://huggingface.co/TMElyralab/MuseTalk/resolve/main/musetalk/pytorch_model.bin -P ./models/musetalk/
 wget https://huggingface.co/TMElyralab/MuseTalk/resolve/main/musetalk/musetalk.json -P ./models/musetalk/
@@ -30,8 +30,15 @@ wget https://huggingface.co/yzd-v/DWPose/resolve/main/dw-ll_ucoco_384.pth -P ./m
 wget https://download.pytorch.org/models/resnet18-5c106cde.pth -P ./models/face-parse-bisent/
 # 初始化环境
 
+# 构建
+python -m py_compile app.py
+mv __pycache__/app.cpython-310.pyc app.pyc
+rm -rfv __pycache__ || true
+rm -rfv app.py || true
+# 构建
+
 # 启动服务
-# python webui.py
+# python app.py
 # python -m scripts.inference --inference_config configs/inference/tests.yaml
 # 启动服务
 

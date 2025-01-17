@@ -16,7 +16,8 @@ mim install "mmengine==0.10.3"
 mim install "mmcv==2.1.0"
 mim install "mmdet==3.2.0"
 mim install "mmpose==1.3.1"
-pip install gradio==3.20.0
+pip install gradio==3.50.2
+
 New-Item -ItemType Directory -Force -Path ./models/musetalk/
 New-Item -ItemType Directory -Force -Path ./models/sd-vae-ft-mse/
 New-Item -ItemType Directory -Force -Path ./models/whisper/
@@ -31,8 +32,15 @@ Invoke-WebRequest -Uri "https://huggingface.co/yzd-v/DWPose/resolve/main/dw-ll_u
 Invoke-WebRequest -Uri "https://download.pytorch.org/models/resnet18-5c106cde.pth" -OutFile "./models/face-parse-bisent/resnet18-5c106cde.pth"
 # 初始化环境
 
+# 构建
+python -m py_compile app.py
+Move-Item -Path "__pycache__\app.cpython-310.pyc" -Destination "app.pyc"
+Remove-Item -Path "__pycache__" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item -Path "app.py" -Force -ErrorAction SilentlyContinue
+# 构建
+
 # 启动服务
-#python webui.py
+#python webui.pyc
 # 启动服务
 
 # 清除文件
