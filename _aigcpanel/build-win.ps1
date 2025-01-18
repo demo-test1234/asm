@@ -1,7 +1,8 @@
 # Enable echo
 $VerbosePreference = "Continue"
 
-Install-Module -Name 7Zip4Powershell
+Install-Module -Name 7Zip4Powershell -Scope CurrentUser
+Import-Module 7Zip4Powershell
 
 # 环境准备
 conda 'shell.powershell' 'hook' | Out-String | Invoke-Expression
