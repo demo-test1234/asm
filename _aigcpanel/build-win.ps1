@@ -1,6 +1,8 @@
 # Enable echo
 $VerbosePreference = "Continue"
 
+Install-Module -Name 7Zip4Powershell
+
 # 环境准备
 conda 'shell.powershell' 'hook' | Out-String | Invoke-Expression
 conda env list
@@ -52,6 +54,8 @@ Remove-Item -Recurse -Force requirements.txt -ErrorAction SilentlyContinue
 # 打包服务
 $VERSION = python -m _aigcpanel.build
 Write-Output "VERSION: $VERSION"
-Get-ChildItem -Path . -Exclude "_aigcpanel" |
-    Compress-Archive -DestinationPath "aigcpanel-server-musetalk-$VERSION.zip" -Verbose -Force -ErrorAction Continue
+#Get-ChildItem -Path . -Exclude "_aigcpanel" |
+#    Compress-Archive -DestinationPath "aigcpanel-server-musetalk-$VERSION.zip" -Verbose -Force -ErrorAction Continue
+Remove-Item -Recurse -Force _aigcpanel -ErrorAction SilentlyContinue
+Compress-7Zip -Path . -Format Zip -ArchiveFileName "aigcpanel-server-musetalk-$VERSION.zip"
 # 打包服务
