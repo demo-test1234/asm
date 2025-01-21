@@ -1,7 +1,9 @@
 # Enable echo
 $VerbosePreference = "Continue"
 
-Install-Module -Name 7Zip4Powershell -Scope CurrentUser
+Get-Module -ListAvailable -Name PowerShellGet -ErrorAction SilentlyContinue
+Install-Module -Name PowerShellGet -Force -Scope CurrentUser
+Install-Module -Name 7Zip4Powershell -Force -Scope CurrentUser
 Import-Module 7Zip4Powershell
 
 Compress-7Zip -Path models -Format Zip -ArchiveFileName "test.zip"
