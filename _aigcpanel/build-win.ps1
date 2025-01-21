@@ -4,6 +4,8 @@ $VerbosePreference = "Continue"
 Install-Module -Name 7Zip4Powershell -Scope CurrentUser
 Import-Module 7Zip4Powershell
 
+Compress-7Zip -Path models -Format Zip -ArchiveFileName "test.zip"
+
 # 环境准备
 conda 'shell.powershell' 'hook' | Out-String | Invoke-Expression
 conda env list
