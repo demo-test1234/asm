@@ -1,10 +1,12 @@
 # Enable echo
 $VerbosePreference = "Continue"
 
+# 工具准备
 Get-Module -ListAvailable -Name PowerShellGet -ErrorAction SilentlyContinue
 Install-Module -Name PowerShellGet -Force -Scope CurrentUser
 Install-Module -Name 7Zip4Powershell -Force -Scope CurrentUser
 Import-Module 7Zip4Powershell
+# 工具准备
 
 # 环境准备
 conda 'shell.powershell' 'hook' | Out-String | Invoke-Expression

@@ -5,6 +5,8 @@
   "description": "基于MuseTalk模型的模型，支持视频合成功能",
   "platformName": "__ENV__",
   "platformArch": "__ARCH__",
+  "serverRequire": ">=0.3.0",
+  "deviceDescription": "内存16G+，显存16GB+，支持CUDA加速",
   "entry": "launcher",
   "launcher": {
     "entry": "./_aienv/bin/python",
