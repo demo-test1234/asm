@@ -46,6 +46,7 @@ rm -rfv app.py || true
 rm -rfv asset || true
 rm -rfv *.md || true
 rm -rfv requirements.txt || true
+find . -type d -name "__pycache__" -print -exec rm -r {} +
 # 清除文件
 
 # 打包服务

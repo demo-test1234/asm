@@ -9,6 +9,9 @@ config = json.load(open(configFile, 'r', encoding='utf-8'))
 config['platformName'] = util.platformName()
 config['platformArch'] = util.platformArch()
 
+if util.platformName() == 'win':
+    config['launcher']['entry'] = f".\\_aienv\\python.exe"
+
 archPath = f"{config['platformName']}-{config['platformArch']}"
 
 # copy binary/osx-arm64/* to binary/

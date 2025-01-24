@@ -1,4 +1,4 @@
-import os
+import os, sys
 import time
 import shutil
 
@@ -59,7 +59,10 @@ def process_files(image, audio, box):
     with open('./configs/inference/test2.yaml', 'w', encoding='utf-8') as file:
         file.write(config_content)
 
-    pythonBin = os.path.join(root, '_aienv/bin', 'python')
+    if sys.platform == 'win32':
+        pythonBin = os.path.join(root, '_aienv', 'python.exe')
+    else:
+        pythonBin = os.path.join(root, '_aienv/bin', 'python')
     # 执行命令生成视频，并指定编码为 UTF-8
     cmd = f"{pythonBin} -m scripts.inference --inference_config ./configs/inference/test2.yaml"
     print('cmd', cmd)
