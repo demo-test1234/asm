@@ -33,8 +33,6 @@ wget https://download.pytorch.org/models/resnet18-5c106cde.pth -P ./models/face-
 # 构建
 python -m py_compile app.py
 mv __pycache__/app.cpython-310.pyc app.pyc
-rm -rfv __pycache__ || true
-rm -rfv app.py || true
 # 构建
 
 # 启动服务
@@ -43,9 +41,12 @@ rm -rfv app.py || true
 # 启动服务
 
 # 清除文件
+rm -rfv app.py || true
 rm -rfv asset || true
 rm -rfv *.md || true
 rm -rfv requirements.txt || true
+rm -rfv .git || true
+rm -rfv .github || true
 find . -type d -name "__pycache__" -print -exec rm -r {} +
 # 清除文件
 

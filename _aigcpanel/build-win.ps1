@@ -42,8 +42,6 @@ Invoke-WebRequest -Uri "https://download.pytorch.org/models/resnet18-5c106cde.pt
 # 构建
 python -m py_compile app.py
 Move-Item -Path "__pycache__\app.cpython-310.pyc" -Destination "app.pyc"
-Remove-Item -Path "__pycache__" -Recurse -Force -ErrorAction SilentlyContinue
-Remove-Item -Path "app.py" -Force -ErrorAction SilentlyContinue
 # 构建
 
 # 启动服务
@@ -51,9 +49,13 @@ Remove-Item -Path "app.py" -Force -ErrorAction SilentlyContinue
 # 启动服务
 
 # 清除文件
+Remove-Item -Path "app.py" -Force -ErrorAction SilentlyContinue
 Remove-Item -Recurse -Force asset -ErrorAction SilentlyContinue -Verbose
-Remove-Item -Recurse -Force .\*.md -ErrorAction SilentlyContinue
 Remove-Item -Recurse -Force requirements.txt -ErrorAction SilentlyContinue
+Remove-Item -Recurse -Force .\*.md -ErrorAction SilentlyContinue
+Remove-Item -Recurse -Force .\.git -ErrorAction SilentlyContinue
+Remove-Item -Recurse -Force .\.github -ErrorAction SilentlyContinue
+Remove-Item -Path "__pycache__" -Recurse -Force -ErrorAction SilentlyContinue
 # 清除文件
 
 # 打包服务
