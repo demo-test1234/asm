@@ -72,11 +72,13 @@ def process_files(image, audio, box):
 
     # 监听命令执行输出
     output_string = ""
-    for line in process.stdout:
-        print(line)  # 在控制台输出命令执行过程中的输出
-        output_string += line
-    for line in process.stderr:
-        print(line)
+    if process.stdout is not None:
+        for line in process.stdout:
+            print(line)  # 在控制台输出命令执行过程中的输出
+            output_string += line
+    if process.stderr is not None:
+        for line in process.stderr:
+            print(line)
 
     print('===== 阶段3/3 结果检查 =====')
     print(f'Clean imagePathRandom: {imagePathRandom}')
