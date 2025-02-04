@@ -42,7 +42,7 @@ Invoke-WebRequest -Uri "https://download.pytorch.org/models/resnet18-5c106cde.pt
 # 构建
 #python -m py_compile app.py
 #Move-Item -Path "__pycache__\app.cpython-310.pyc" -Destination "app.pyc"
-python -m scripts/inference.py
+python -m py_compile scripts/inference.py
 Move-Item -Path "scripts\__pycache__\inference.cpython-310.pyc" -Destination "scripts\inference.pyc"
 # 构建
 
