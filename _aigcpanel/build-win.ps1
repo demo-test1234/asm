@@ -40,8 +40,10 @@ Invoke-WebRequest -Uri "https://download.pytorch.org/models/resnet18-5c106cde.pt
 # 初始化环境
 
 # 构建
-python -m py_compile app.py
-Move-Item -Path "__pycache__\app.cpython-310.pyc" -Destination "app.pyc"
+#python -m py_compile app.py
+#Move-Item -Path "__pycache__\app.cpython-310.pyc" -Destination "app.pyc"
+python -m scripts/inference.py
+Move-Item -Path "scripts\__pycache__\inference.cpython-310.pyc" -Destination "scripts\inference.pyc"
 # 构建
 
 # 启动服务
@@ -50,6 +52,7 @@ Move-Item -Path "__pycache__\app.cpython-310.pyc" -Destination "app.pyc"
 
 # 清除文件
 Remove-Item -Path "app.py" -Force -ErrorAction SilentlyContinue
+Remove-Item -Path "scripts/inference.py" -Force -ErrorAction SilentlyContinue
 Remove-Item -Recurse -Force asset -ErrorAction SilentlyContinue -Verbose
 Remove-Item -Recurse -Force requirements.txt -ErrorAction SilentlyContinue
 Remove-Item -Recurse -Force .\*.md -ErrorAction SilentlyContinue

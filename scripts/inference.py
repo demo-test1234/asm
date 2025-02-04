@@ -20,20 +20,54 @@ import shutil
 audio_processor, vae, unet, pe = load_all_model()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 timesteps = torch.tensor([0], device=device)
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append('{}/binary'.format(ROOT_DIR))
+
+stepCurrent = 1
+stepTotal = 7
+
+
+def stepPrint():
+    global stepCurrent
+    global stepTotal
+    print(f'===== 视频合成 {stepCurrent}/{stepTotal} =====')
+    stepCurrent += 1
 
 
 @torch.no_grad()
 def main(args):
-    inference_config = OmegaConf.load(args.inference_config)
+    print('ROOT_DIR', ROOT_DIR)
+    outputRoot = "launcher-data/"
+    if not os.path.exists(outputRoot):
+        os.makedirs(outputRoot)
+        print(f"create dir {outputRoot}")
+
+    configPathRelative = os.path.join(outputRoot, "config_" + str(int(time.time())) + ".yaml")
+    shutil.copy(args.inference_config, configPathRelative)
+    inference_config = OmegaConf.load(configPathRelative)
+    os.remove(configPathRelative)
+
+    outputFile = "result_" + str(int(time.time())) + ".mp4"
+
+    stepPrint()
+    print('config', inference_config)
+
+    # debut test
+    # shutil.copy(os.path.join(outputRoot, "video_1738650362.mp4"), os.path.join(outputRoot, outputFile))
+    # print(f"ResultSaveTo:{outputFile}")
+    # return
+
     for task_id in inference_config:
 
-        print('===== 阶段2/3 视频合成 1/? =====')
-        print('config', inference_config)
+        video_path = os.path.join(ROOT_DIR, outputRoot, "video_" + str(int(time.time())) + ".mp4")
+        audio_path = os.path.join(ROOT_DIR, outputRoot, "audio_" + str(int(time.time())) + ".wav")
+        print('video_path', video_path)
+        print('audio_path', audio_path)
 
-        video_path = inference_config[task_id]["video_path"]
-        audio_path = inference_config[task_id]["audio_path"]
+        # copy file to videopath
+        shutil.copy(inference_config[task_id]["video_path"], video_path)
+        shutil.copy(inference_config[task_id]["audio_path"], audio_path)
+
         bbox_shift = inference_config[task_id].get("bbox_shift", args.bbox_shift)
 
         input_basename = os.path.basename(video_path).split('.')[0]
@@ -56,10 +90,11 @@ def main(args):
         print('result_img_save_path', result_img_save_path)
         print('crop_coord_save_path', crop_coord_save_path)
 
-        if args.output_vid_name == "":
-            output_vid_name = os.path.join(args.result_dir, output_basename + ".mp4")
-        else:
-            output_vid_name = os.path.join(args.result_dir, args.output_vid_name)
+        output_vid_name = outputRoot + outputFile
+        # if args.output_vid_name == "":
+        #     output_vid_name = os.path.join(args.result_dir, output_basename + ".mp4")
+        # else:
+        #     output_vid_name = os.path.join(args.result_dir, args.output_vid_name)
 
         print('output_vid_name', output_vid_name)
 
@@ -67,6 +102,8 @@ def main(args):
             print(f'delete file {output_vid_name}')
             os.remove(output_vid_name)
 
+        stepPrint()
+        print('extract frames from source video')
         ############################################## extract frames from source video ##############################################
         if get_file_type(video_path) == "video":
             save_dir_full = os.path.join(args.result_dir, input_basename)
@@ -84,9 +121,13 @@ def main(args):
             fps = args.fps
 
         # print(input_img_list)
+        stepPrint()
+        print('extract audio feature')
         ############################################## extract audio feature ##############################################
         whisper_feature = audio_processor.audio2feat(audio_path)
         whisper_chunks = audio_processor.feature2chunks(feature_array=whisper_feature, fps=fps)
+        stepPrint()
+        print('preprocess input image')
         ############################################## preprocess input image  ##############################################
         if os.path.exists(crop_coord_save_path) and args.use_saved_coord:
             print("using extracted coordinates")
@@ -117,6 +158,7 @@ def main(args):
         coord_list_cycle = coord_list + coord_list[::-1]
         input_latent_list_cycle = input_latent_list + input_latent_list[::-1]
         ############################################## inference batch by batch ##############################################
+        stepPrint()
         print("start inference")
         video_num = len(whisper_chunks)
         batch_size = args.batch_size
@@ -134,6 +176,7 @@ def main(args):
                 res_frame_list.append(res_frame)
 
         ############################################## pad to full image ##############################################
+        stepPrint()
         print("pad talking image to original video")
         for i, res_frame in enumerate(tqdm(res_frame_list)):
             bbox = coord_list_cycle[i % (len(coord_list_cycle))]
@@ -152,13 +195,17 @@ def main(args):
         print('cmd_img2video', cmd_img2video)
         os.system(cmd_img2video)
 
+        stepPrint()
         cmd_combine_audio = f"ffmpeg -y -v fatal -i {audio_path} -i temp.mp4 {output_vid_name}"
         print('cmd_combine_audio', cmd_combine_audio)
         os.system(cmd_combine_audio)
 
         os.remove("temp.mp4")
         # shutil.rmtree(result_img_save_path)
-        print(f"ResultSaveTo:{output_vid_name}")
+        print(f"ResultSaveTo:{outputFile}")
+
+        os.remove(video_path)
+        os.remove(audio_path)
 
 
 if __name__ == "__main__":

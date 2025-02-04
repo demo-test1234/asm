@@ -12,7 +12,10 @@
     "entry": "./_aienv/bin/python",
     "entryArgs": [
       "-u",
-      "app.pyc"
+      "-m",
+      "scripts.inference",
+      "--inference_config",
+      "${CONFIG}"
     ],
     "envs": [
       "AAA=111",

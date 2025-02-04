@@ -31,8 +31,10 @@ wget https://download.pytorch.org/models/resnet18-5c106cde.pth -P ./models/face-
 # 初始化环境
 
 # 构建
-python -m py_compile app.py
-mv __pycache__/app.cpython-310.pyc app.pyc
+#python -m py_compile app.py
+#mv __pycache__/app.cpython-310.pyc app.pyc
+python -m py_compile scripts/inference.py
+mv scripts/__pycache__/inference.cpython-310.pyc scripts/inference.pyc
 # 构建
 
 # 启动服务
@@ -42,6 +44,7 @@ mv __pycache__/app.cpython-310.pyc app.pyc
 
 # 清除文件
 rm -rfv app.py || true
+rm -rfv scripts/inference.py || true
 rm -rfv asset || true
 rm -rfv *.md || true
 rm -rfv requirements.txt || true
