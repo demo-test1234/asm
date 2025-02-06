@@ -55,7 +55,16 @@ find . -type d -name "__pycache__" -print -exec rm -r {} +
 
 # 打包服务
 VERSION=$(python -m _aigcpanel.build)
+VERSION_ARCH=$(echo $VERSION | awk -F '-' '{print $1"-"$2}')
 echo "VERSION: ${VERSION}"
+echo "VERSION_ARCH: ${VERSION_ARCH}"
+curl -o launcher "https://modstart-lib-public.oss-cn-shanghai.aliyuncs.com/aigcpanel-server-launcher/launcher-${VERSION_ARCH}"
+chmod +x launcher
+curl -o binary/ffmpeg "https://modstart-lib-public.oss-cn-shanghai.aliyuncs.com/ffmpeg/ffmpeg-${VERSION_ARCH}"
+chmod +x binary/ffmpeg
+curl -o binary/ffprobe "https://modstart-lib-public.oss-cn-shanghai.aliyuncs.com/ffprobe/ffprobe-${VERSION_ARCH}"
+chmod +x binary/ffprobe
+rm -rfv "_aigcpanel"
 zip -rv "./aigcpanel-server-musetalk-${VERSION}.zip" * -x "_aigcpanel/*"
 # 打包服务
 

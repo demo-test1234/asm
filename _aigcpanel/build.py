@@ -15,10 +15,10 @@ if util.platformName() == 'win':
 archPath = f"{config['platformName']}-{config['platformArch']}"
 
 # copy binary/osx-arm64/* to binary/
-util.copyAll(util.rootDir(f'_aigcpanel/binary/{archPath}'), util.rootDir('binary'))
+# util.copyAll(util.rootDir(f'_aigcpanel/binary/{archPath}'), util.rootDir('binary'))
 
 # move binary launcher to root
-shutil.move(util.binaryPath('binary/launcher'), util.binaryPath('launcher'))
+# shutil.move(util.binaryPath('binary/launcher'), util.binaryPath('launcher'))
 
 outputFile = util.rootDir('config.json')
 json.dump(config, open(outputFile, 'w', encoding='utf-8'), indent=4, ensure_ascii=False)
