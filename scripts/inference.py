@@ -18,6 +18,7 @@ import shutil
 
 # load model weights
 audio_processor, vae, unet, pe = load_all_model()
+useGpu = torch.cuda.is_available()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 timesteps = torch.tensor([0], device=device)
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -37,6 +38,7 @@ def stepPrint():
 @torch.no_grad()
 def main(args):
     print('ROOT_DIR', ROOT_DIR)
+    print('UseGPU', useGpu)
     outputRoot = "launcher-data/"
     if not os.path.exists(outputRoot):
         os.makedirs(outputRoot)
