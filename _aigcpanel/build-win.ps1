@@ -17,6 +17,7 @@ conda activate ./_aienv
 # 环境准备
 
 # 初始化环境
+pip install torch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 --index-url https://download.pytorch.org/whl/cu118
 pip install -r requirements.txt
 pip install --no-cache-dir -U openmim
 mim install "mmengine==0.10.3"
