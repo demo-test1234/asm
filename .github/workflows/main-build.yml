@@ -78,7 +78,18 @@ jobs:
           zone: ${{ secrets.KODO_ZONE }}
           callback: ${{ secrets.OSS_CALLBACK }}
           assets: |
-            *.zip:models/${{ env.DIST_FILE_NAME }}/
+            *.zip:models/aigcpanel-server-musetalk-${{ env.DIST_FILE_NAME }}/
 
+#      - name: Upload
+#        uses: modstart/github-oss-action@master
+#        with:
+#          title: ${{ github.event.head_commit.message }}
+#          key-id: ${{ secrets.OSS_KEY_ID }}
+#          key-secret: ${{ secrets.OSS_KEY_SECRET }}
+#          region: ${{ secrets.OSS_REGION }}
+#          bucket: ${{ secrets.OSS_BUCKET }}
+#          callback: ${{ secrets.OSS_CALLBACK }}
+#          assets: |
+#            *.zip:models/aigcpanel-server-musetalk-${{ env.DIST_FILE_NAME }}/
 
 
