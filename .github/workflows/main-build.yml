@@ -67,7 +67,8 @@ jobs:
           Write-Host "::add-mask::$DIST_FILE_NAME"
           echo "DIST_FILE_NAME=$DIST_FILE_NAME" >> $env:GITHUB_ENV
 
-      - name: Upload
+      - name: Upload Kodo
+        if: vars.UPLOAD_TYPE == 'kodo'
         uses: modstart/github-kodo-action@master
         with:
           title: ${{ github.event.head_commit.message }}
@@ -80,16 +81,17 @@ jobs:
           assets: |
             *.zip:models/aigcpanel-server-musetalk-${{ env.DIST_FILE_NAME }}/
 
-#      - name: Upload
-#        uses: modstart/github-oss-action@master
-#        with:
-#          title: ${{ github.event.head_commit.message }}
-#          key-id: ${{ secrets.OSS_KEY_ID }}
-#          key-secret: ${{ secrets.OSS_KEY_SECRET }}
-#          region: ${{ secrets.OSS_REGION }}
-#          bucket: ${{ secrets.OSS_BUCKET }}
-#          callback: ${{ secrets.OSS_CALLBACK }}
-#          assets: |
-#            *.zip:models/aigcpanel-server-musetalk-${{ env.DIST_FILE_NAME }}/
+      - name: Upload Oss
+        if: vars.UPLOAD_TYPE == 'oss'
+        uses: modstart/github-oss-action@master
+        with:
+          title: ${{ github.event.head_commit.message }}
+          key-id: ${{ secrets.OSS_KEY_ID }}
+          key-secret: ${{ secrets.OSS_KEY_SECRET }}
+          region: ${{ secrets.OSS_REGION }}
+          bucket: ${{ secrets.OSS_BUCKET }}
+          callback: ${{ secrets.OSS_CALLBACK }}
+          assets: |
+            *.zip:models/aigcpanel-server-musetalk-${{ env.DIST_FILE_NAME }}/
 
 
