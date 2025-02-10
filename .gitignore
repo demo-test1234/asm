@@ -15,4 +15,4 @@ __pycache__/
 /launcher-data/
 /_cache/
 .DS_Store
-
+/aigcpanelmodels/
