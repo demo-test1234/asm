@@ -15,10 +15,10 @@ jobs:
           include:
 #              - os: ubuntu-latest
 #                arch: [arm64, amd64]
-              - os: macos-latest
-                arch: [arm64, amd64]
-#              - os: windows-latest
-#                arch: [amd64]
+#              - os: macos-latest
+#                arch: [arm64, amd64]
+              - os: windows-latest
+                arch: [amd64]
 
     steps:
       - name: Checkout Code
