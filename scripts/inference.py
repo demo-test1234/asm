@@ -1,5 +1,9 @@
-import argparse
 import os, time
+
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+os.environ['XDG_CACHE_HOME'] = os.path.join(ROOT_DIR, '_cache')
+
+import argparse
 from omegaconf import OmegaConf
 import numpy as np
 import cv2
@@ -21,7 +25,6 @@ audio_processor, vae, unet, pe = load_all_model()
 useGpu = torch.cuda.is_available()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 timesteps = torch.tensor([0], device=device)
-ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append('{}/binary'.format(ROOT_DIR))
 
 stepCurrent = 1

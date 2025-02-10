@@ -13,4 +13,6 @@ __pycache__/
 /logs/
 /_aienv.backup/
 /launcher-data/
+/_cache/
+.DS_Store
 

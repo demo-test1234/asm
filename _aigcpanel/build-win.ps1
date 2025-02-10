@@ -26,18 +26,20 @@ mim install "mmdet==3.2.0"
 mim install "mmpose==1.3.1"
 pip install gradio==3.50.2
 
-New-Item -ItemType Directory -Force -Path ./models/musetalk/
+#New-Item -ItemType Directory -Force -Path ./models/musetalk/
 New-Item -ItemType Directory -Force -Path ./models/sd-vae-ft-mse/
 New-Item -ItemType Directory -Force -Path ./models/whisper/
 New-Item -ItemType Directory -Force -Path ./models/dwpose/
 New-Item -ItemType Directory -Force -Path ./models/face-parse-bisent/
-Invoke-WebRequest -Uri "https://huggingface.co/TMElyralab/MuseTalk/resolve/main/musetalk/pytorch_model.bin" -OutFile "./models/musetalk/pytorch_model.bin"
-Invoke-WebRequest -Uri "https://huggingface.co/TMElyralab/MuseTalk/resolve/main/musetalk/musetalk.json" -OutFile "./models/musetalk/musetalk.json"
+#Invoke-WebRequest -Uri "https://huggingface.co/TMElyralab/MuseTalk/resolve/main/musetalk/pytorch_model.bin" -OutFile "./models/musetalk/pytorch_model.bin"
+#Invoke-WebRequest -Uri "https://huggingface.co/TMElyralab/MuseTalk/resolve/main/musetalk/musetalk.json" -OutFile "./models/musetalk/musetalk.json"
 Invoke-WebRequest -Uri "https://huggingface.co/stabilityai/sd-vae-ft-mse/resolve/main/diffusion_pytorch_model.bin" -OutFile "./models/sd-vae-ft-mse/diffusion_pytorch_model.bin"
 Invoke-WebRequest -Uri "https://huggingface.co/stabilityai/sd-vae-ft-mse/resolve/main/config.json" -OutFile "./models/sd-vae-ft-mse/config.json"
 Invoke-WebRequest -Uri "https://openaipublic.azureedge.net/main/whisper/models/65147644a518d12f04e32d6f3b26facc3f8dd46e5390956a9424a650c0ce22b9/tiny.pt" -OutFile "./models/whisper/tiny.pt"
 Invoke-WebRequest -Uri "https://huggingface.co/yzd-v/DWPose/resolve/main/dw-ll_ucoco_384.pth" -OutFile "./models/dwpose/dw-ll_ucoco_384.pth"
 Invoke-WebRequest -Uri "https://download.pytorch.org/models/resnet18-5c106cde.pth" -OutFile "./models/face-parse-bisent/resnet18-5c106cde.pth"
+New-Item -ItemType Directory -Force -Path  ./_cache/torch/hub/checkpoints
+Invoke-WebRequest -Uri "https://www.adrianbulat.com/downloads/python-fan/s3fd-619a316812.pth" -OutFile "./_cache/torch/hub/checkpoints/s3fd-619a316812.pth"
 # 初始化环境
 
 # 构建
