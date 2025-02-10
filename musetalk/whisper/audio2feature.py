@@ -9,7 +9,7 @@ sys.path.append("..")
 class Audio2Feature():
     def __init__(self, 
                  whisper_model_type="tiny",
-                 model_path="./models/whisper/tiny.pt"):
+                 model_path="./aigcpanelmodels/whisper/tiny.pt"):
         self.whisper_model_type = whisper_model_type
         self.model = load_model(model_path) #
 
