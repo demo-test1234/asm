@@ -65,7 +65,11 @@ curl -o binary/ffmpeg "https://modstart-lib-public.oss-cn-shanghai.aliyuncs.com/
 chmod +x binary/ffmpeg
 curl -o binary/ffprobe "https://modstart-lib-public.oss-cn-shanghai.aliyuncs.com/ffprobe/ffprobe-${VERSION_ARCH}"
 chmod +x binary/ffprobe
-rm -rfv "_aigcpanel"
-zip -rv "./aigcpanel-server-musetalk-${VERSION}.zip" * -x "_aigcpanel/*"
+rm -rfv "_aigcpanel/build*"
+rm -rfv "_aigcpanel/config.json"
+security find-identity -v -p codesigning
+#find . \( -name "*.pyc" -o -name "*.dylib" -o -name "*.so" \) -print0 | xargs -0 -n 1 -P 4 sudo codesign --force --verbose --sign - || true
+find . \( -name "*.pyc" -o -name "*.dylib" -o -name "*.so" \) -print0 | xargs -0 -n 1 -P 4 sudo codesign --force --verbose --sign "Xi'an Yanyi Information Technology Co., Ltd (Q96H3H33RK)" || true
+zip -rv "./aigcpanel-server-musetalk-${VERSION}.zip" *
 # 打包服务
 

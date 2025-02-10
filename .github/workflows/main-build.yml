@@ -13,16 +13,43 @@ jobs:
       fail-fast: false
       matrix:
           include:
-              - os: ubuntu-latest
-                arch: [arm64, amd64]
+#              - os: ubuntu-latest
+#                arch: [arm64, amd64]
               - os: macos-latest
                 arch: [arm64, amd64]
-              - os: windows-latest
-                arch: [amd64]
+#              - os: windows-latest
+#                arch: [amd64]
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
+      - name: Cert Prepare (macOS)
+        if: runner.os == 'macOS'
+        env:
+          MACOS_CERTIFICATE: ${{ secrets.CORP_MACOS_CERTIFICATE }}
+          MACOS_CERTIFICATE_PASSWORD: ${{ secrets.CORP_MACOS_CERTIFICATE_PASSWORD }}
+        run: |
+          echo "find-identity"
+          security find-identity -p codesigning
+          echo "$MACOS_CERTIFICATE" | base64 --decode > certificate.p12
+          security create-keychain -p "" build.keychain
+          security import certificate.p12 -k build.keychain -P "$MACOS_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          security list-keychains -s build.keychain
+          security set-keychain-settings -t 3600 -u build.keychain
+          security unlock-keychain -p "" build.keychain
+          echo "find-identity"
+          security find-identity -v -p codesigning build.keychain
+          echo "find-identity"
+          security find-identity -p codesigning
+          echo "set-key-partition-list"
+          security set-key-partition-list -S apple-tool:,apple: -s -k "" -l "Mac Developer ID Application: Xi'an Yanyi Information Technology Co., Ltd" -t private build.keychain
+          echo "export"
+          security export -k build.keychain -t certs -f x509 -p -o certificate.cer
+          echo "add-trusted-cert"
+          sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain certificate.cer
+          echo "find-identity"
+          security find-identity -p codesigning
 
       - name: Code Prepare
         run: git submodule update --init --recursive

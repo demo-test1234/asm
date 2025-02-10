@@ -66,7 +66,8 @@ curl -o binary/ffmpeg "https://modstart-lib-public.oss-cn-shanghai.aliyuncs.com/
 chmod +x binary/ffmpeg
 curl -o binary/ffprobe "https://modstart-lib-public.oss-cn-shanghai.aliyuncs.com/ffprobe/ffprobe-${VERSION_ARCH}"
 chmod +x binary/ffprobe
-rm -rfv "_aigcpanel"
+rm -rfv "_aigcpanel/build*"
+rm -rfv "_aigcpanel/config.json"
 zip -rv "./aigcpanel-server-musetalk-${VERSION}.zip" *
 # 打包服务
 
