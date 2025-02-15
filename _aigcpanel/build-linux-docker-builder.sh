@@ -53,10 +53,10 @@ mv ./_aienv /tmp/_aienv_old
 mkdir ./_aienv
 cd ./_aienv
 tar xf /tmp/env.tar
-ls -alh ./_aienv
-./_aienv/bin/conda-unpack
+./bin/conda-unpack
 du -sh /tmp/_aienv_old
-du -sh ./_aienv
+du -sh .
+cd ..
 # 压缩环境
 
 # 清除文件

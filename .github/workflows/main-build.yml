@@ -36,10 +36,11 @@ jobs:
           tags: aigcpanel-server-musetalk:latest
           push: false
 
-      - name: docker check
+      - name: docker save
         if: runner.os == 'Linux'
         run: |
           sudo docker images
+          sudo docker save -o aigcpanel-server-musetalk.tar aigcpanel-server-musetalk:latest
 
       - name: Cert Prepare (macOS)
         if: runner.os == 'macOS'
