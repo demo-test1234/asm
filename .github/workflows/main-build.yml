@@ -47,6 +47,7 @@ jobs:
         run: |
           sudo docker images
           sudo docker save -o aigcpanel-server-musetalk.tar aigcpanel-server-musetalk:latest
+          ls -alh .
 
       - name: Cert Prepare (macOS)
         if: runner.os == 'macOS'
@@ -91,21 +92,16 @@ jobs:
         run: |
           ./_aigcpanel/build-osx.sh
 
-      - name: Build
-        if: runner.os == 'Linux'
-        run: |
-          ./_aigcpanel/build-linux.sh
+#      - name: Build
+#        if: runner.os == 'Linux'
+#        run: |
+#          ./_aigcpanel/build-linux.sh
 
       - name: Build
         if: runner.os == 'Windows'
         shell: powershell
         run: |
           ./_aigcpanel/build-win.ps1
-
-      - name: Check build
-        if: runner.os == 'Linux'
-        run: |
-          ls -l .
 
       - name: Set Build Name ( Linux / macOS )
         if: runner.os == 'Linux' || runner.os == 'macOS'
