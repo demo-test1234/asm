@@ -1,0 +1,37 @@
+{
+    "name": "server-MuseTalk",
+    "version": "0.2.0",
+    "title": "MuseTalk模型",
+    "description": "基于MuseTalk模型的模型，支持视频合成功能",
+    "platformName": "osx",
+    "platformArch": "arm64",
+    "serverRequire": ">=0.3.0",
+    "deviceDescription": "内存16G+，显存16GB+，支持CUDA加速",
+    "entry": "launcher",
+    "launcher": {
+        "entry": "./_aienv/bin/python",
+        "entryArgs": [
+            "-u",
+            "-m",
+            "scripts.inference",
+            "--inference_config",
+            "${CONFIG}"
+        ],
+        "envs": [
+            "AAA=111",
+            "BBB=222"
+        ]
+    },
+    "functions": [
+        "videoGen"
+    ],
+    "settings": [
+        {
+            "name": "port",
+            "type": "text",
+            "title": "服务端口",
+            "default": "",
+            "placeholder": "留空会检测使用随机端口"
+        }
+    ]
+}

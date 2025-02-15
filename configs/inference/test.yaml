@@ -1,0 +1,6 @@
+task_0:
+ video_path: @video_path
+ audio_path: @audio_path
+ bbox_shift: @bbox_shift
+  
+
