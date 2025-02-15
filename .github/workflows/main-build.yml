@@ -38,7 +38,7 @@ jobs:
         if: runner.os == 'Linux'
         uses: docker/build-push-action@v6
         with:
-          load: false
+          load: true
           tags: aigcpanel-server-musetalk:latest
           push: false
 
