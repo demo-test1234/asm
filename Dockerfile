@@ -26,7 +26,8 @@ RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-lat
     chmod +x /tmp/miniconda.sh && \
     /bin/bash /tmp/miniconda.sh -b -p $CONDA_DIR && \
     rm /tmp/miniconda.sh && \
-    conda clean -afy \
+    conda clean -afy
+RUN conda --version
 SHELL ["/bin/bash", "-c"]
 RUN COPY --from=builder /app /app
 WORKDIR /app
