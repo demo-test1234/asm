@@ -4,8 +4,6 @@ set -x
 set -e
 
 # 环境准备
-sudo rm -rf "/usr/local/share/boost"
-sudo rm -rf "$AGENT_TOOLSDIRECTORY"
 eval "$(conda shell.bash hook)"
 conda env list
 rm -rfv ./_aienv
