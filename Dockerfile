@@ -14,6 +14,7 @@ RUN conda --version
 SHELL ["/bin/bash", "-c"]
 ADD . /app
 WORKDIR /app
+RUN /app/_aigcpanel/build-linux-docker-builder.sh
 
 FROM ubuntu:24.04 AS runtime
 
@@ -29,6 +30,5 @@ RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-lat
     conda clean -afy \
 RUN conda --version
 SHELL ["/bin/bash", "-c"]
-ADD . /app
+RUN COPY --from=builder /app /app
 WORKDIR /app
-RUN COPY --from=builder /app/_aienv /app/_aienv
