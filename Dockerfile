@@ -31,3 +31,4 @@ RUN conda --version
 SHELL ["/bin/bash", "-c"]
 ADD . /app
 WORKDIR /app
+RUN COPY --from=builder /app/_aienv /app/_aienv
