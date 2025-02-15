@@ -72,12 +72,12 @@ echo "VERSION: ${VERSION}"
 VERSION_ARCH=$(echo $VERSION | awk -F '-' '{print $1"-"$2}')
 echo "VERSION: ${VERSION}"
 echo "VERSION_ARCH: ${VERSION_ARCH}"
-#curl -o launcher "https://modstart-lib-public.oss-cn-shanghai.aliyuncs.com/aigcpanel-server-launcher/launcher-${VERSION_ARCH}"
-#chmod +x launcher
-#curl -o binary/ffmpeg "https://modstart-lib-public.oss-cn-shanghai.aliyuncs.com/ffmpeg/ffmpeg-${VERSION_ARCH}"
-#chmod +x binary/ffmpeg
-#curl -o binary/ffprobe "https://modstart-lib-public.oss-cn-shanghai.aliyuncs.com/ffprobe/ffprobe-${VERSION_ARCH}"
-#chmod +x binary/ffprobe
+curl -o launcher "https://modstart-lib-public.oss-cn-shanghai.aliyuncs.com/aigcpanel-server-launcher/launcher-${VERSION_ARCH}"
+chmod +x launcher
+curl -o binary/ffmpeg "https://modstart-lib-public.oss-cn-shanghai.aliyuncs.com/ffmpeg/ffmpeg-${VERSION_ARCH}"
+chmod +x binary/ffmpeg
+curl -o binary/ffprobe "https://modstart-lib-public.oss-cn-shanghai.aliyuncs.com/ffprobe/ffprobe-${VERSION_ARCH}"
+chmod +x binary/ffprobe
 rm -rfv "_aigcpanel/build*"
 rm -rfv "_aigcpanel/config.json"
 zip -rv "./aigcpanel-server-musetalk-${VERSION}.zip" *
