@@ -14,7 +14,7 @@ RUN conda --version
 SHELL ["/bin/bash", "-c"]
 ADD . /app
 WORKDIR /app
-# RUN /app/_aigcpanel/build-linux-docker-builder.sh
+RUN /app/_aigcpanel/build-linux-docker-builder.sh
 
 
 FROM ubuntu:24.04 AS runtime
