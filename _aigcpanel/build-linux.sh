@@ -45,16 +45,6 @@ mv scripts/__pycache__/inference.cpython-310.pyc scripts/inference.pyc
 # python -m scripts.inference --inference_config configs/inference/tests.yaml
 # 启动服务
 
-# 压缩环境
-conda install -c conda-forge conda-pack
-conda-pack -p ./_aienv -o /tmp/env.tar
-rm -rfv ./_aienv
-mkdir ./_aienv
-cd ./_aienv
-tar xf /tmp/env.tar
-./_aienv/bin/conda-unpack
-# 压缩环境
-
 # 清除文件
 rm -rfv app.py || true
 rm -rfv scripts/inference.py || true
