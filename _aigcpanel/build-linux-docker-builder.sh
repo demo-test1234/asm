@@ -4,6 +4,8 @@ set -x
 set -e
 
 # 环境准备
+sudo rm -rf "/usr/local/share/boost"
+sudo rm -rf "$AGENT_TOOLSDIRECTORY"
 eval "$(conda shell.bash hook)"
 conda env list
 rm -rfv ./_aienv
@@ -53,6 +55,7 @@ mv ./_aienv /tmp/_aienv_old
 mkdir ./_aienv
 cd ./_aienv
 tar xf /tmp/env.tar
+rm -rfv /tmp/env.tar
 ./bin/conda-unpack
 du -sh /tmp/_aienv_old
 du -sh .
