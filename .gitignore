@@ -16,3 +16,4 @@ __pycache__/
 /_cache/
 .DS_Store
 /aigcpanelmodels/
+/Miniconda3-latest-Linux-x86_64.sh

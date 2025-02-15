@@ -10,6 +10,13 @@ RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-lat
     /bin/bash /tmp/miniconda.sh -b -p $CONDA_DIR && \
     rm /tmp/miniconda.sh && \
     conda clean -afy
+
+#COPY Miniconda3-latest-Linux-x86_64.sh /tmp/miniconda.sh
+#RUN chmod +x /tmp/miniconda.sh && \
+#    /bin/bash /tmp/miniconda.sh -b -p $CONDA_DIR && \
+#    rm /tmp/miniconda.sh && \
+#    conda clean -afy
+
 SHELL ["/bin/bash", "-c"]
 ADD . /app
 WORKDIR /app
@@ -22,12 +29,23 @@ ENV CONDA_DIR=/opt/miniconda
 ENV PATH=$CONDA_DIR/bin:$PATH
 RUN apt-get update && apt-get install -y curl && apt-get clean
 
+COPY Miniconda3-latest-Linux-x86_64.sh /tmp/miniconda.sh
+
 RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
     chmod +x /tmp/miniconda.sh && \
     /bin/bash /tmp/miniconda.sh -b -p $CONDA_DIR && \
     rm /tmp/miniconda.sh && \
     conda clean -afy
+
+#COPY Miniconda3-latest-Linux-x86_64.sh /tmp/miniconda.sh
+#RUN chmod +x /tmp/miniconda.sh && \
+#    /bin/bash /tmp/miniconda.sh -b -p $CONDA_DIR && \
+#    rm /tmp/miniconda.sh && \
+#    conda clean -afy
+
 RUN conda --version
 SHELL ["/bin/bash", "-c"]
-RUN COPY --from=builder /app /app
+
+COPY --from=builder /app /app
+
 WORKDIR /app

@@ -47,7 +47,7 @@ mv scripts/__pycache__/inference.cpython-310.pyc scripts/inference.pyc
 
 # 压缩环境
 conda install -c conda-forge conda-pack
-conda-pack -n ./_aienv -o /tmp/env.tar
+conda-pack -p ./_aienv -o /tmp/env.tar
 rm -rfv ./_aienv
 mkdir ./_aienv
 cd ./_aienv
