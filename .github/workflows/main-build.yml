@@ -1,0 +1,150 @@
+name: Build
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+          include:
+              - os: ubuntu-latest
+                arch: [arm64, amd64]
+#              - os: macos-latest
+#                arch: [arm64, amd64]
+#              - os: windows-latest
+#                arch: [amd64]
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+#      - name: docker setup
+#        if: runner.os == 'Linux'
+#        uses: docker/setup-buildx-action@v3
+#
+#      - name: docker build
+#        if: runner.os == 'Linux'
+#        uses: docker/build-push-action@v6
+#        with:
+#          load: true
+#          tags: aigcpanel-server-musetalk:latest
+#          push: false
+#
+#      - name: docker save
+#        if: runner.os == 'Linux'
+#        run: |
+#          sudo docker images
+#          sudo docker save -o aigcpanel-server-musetalk.tar aigcpanel-server-musetalk:latest
+#          sudo chmod 0777 aigcpanel-server-musetalk.tar
+#          ls -alh .
+
+      - name: Cert Prepare (macOS)
+        if: runner.os == 'macOS'
+        env:
+          MACOS_CERTIFICATE: ${{ secrets.CORP_MACOS_CERTIFICATE }}
+          MACOS_CERTIFICATE_PASSWORD: ${{ secrets.CORP_MACOS_CERTIFICATE_PASSWORD }}
+        run: |
+          echo "find-identity"
+          security find-identity -p codesigning
+          echo "$MACOS_CERTIFICATE" | base64 --decode > certificate.p12
+          security create-keychain -p "" build.keychain
+          security import certificate.p12 -k build.keychain -P "$MACOS_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          security list-keychains -s build.keychain
+          security set-keychain-settings -t 3600 -u build.keychain
+          security unlock-keychain -p "" build.keychain
+          echo "find-identity"
+          security find-identity -v -p codesigning build.keychain
+          echo "find-identity"
+          security find-identity -p codesigning
+          echo "set-key-partition-list"
+          security set-key-partition-list -S apple-tool:,apple: -s -k "" -l "Mac Developer ID Application: Xi'an Yanyi Information Technology Co., Ltd" -t private build.keychain
+          echo "export"
+          security export -k build.keychain -t certs -f x509 -p -o certificate.cer
+          echo "add-trusted-cert"
+          sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain certificate.cer
+          echo "find-identity"
+          security find-identity -p codesigning
+
+      - name: Code Prepare
+        run: git submodule update --init --recursive
+
+      - name: Setup Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          miniconda-version: "latest"
+          activate-environment: "test"
+          python-version: 3.8
+          auto-activate-base: false
+
+      - name: Build
+        if: runner.os == 'macOS'
+        run: |
+          ./_aigcpanel/build-osx.sh
+
+      - name: docker setup
+        if: runner.os == 'Linux'
+        run:
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+
+      - name: Build
+        if: runner.os == 'Linux'
+        run: |
+          ./_aigcpanel/build-linux.sh
+
+      - name: Build
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          ./_aigcpanel/build-win.ps1
+
+      - name: Set Build Name ( Linux / macOS )
+        if: runner.os == 'Linux' || runner.os == 'macOS'
+        run: |
+          DIST_FILE_NAME=${{ runner.os }}-${{ runner.arch }}-v$(date +%Y%m%d_%H%M%S)-${RANDOM}
+          echo ::add-mask::$DIST_FILE_NAME
+          echo DIST_FILE_NAME=$DIST_FILE_NAME >> $GITHUB_ENV
+
+      - name: Set Build Name ( Windows )
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $randomNumber = Get-Random -Minimum 10000 -Maximum 99999
+          $DIST_FILE_NAME = "Windows-X64-v$(Get-Date -Format 'yyyyMMdd_HHmmss')-$randomNumber"
+          Write-Host "::add-mask::$DIST_FILE_NAME"
+          echo "DIST_FILE_NAME=$DIST_FILE_NAME" >> $env:GITHUB_ENV
+
+      - name: Upload Kodo
+        if: vars.UPLOAD_TYPE == 'kodo'
+        uses: modstart/github-kodo-action@master
+        with:
+          title: ${{ github.event.head_commit.message }}
+          accessKey: ${{ secrets.KODO_ACCESS_KEY }}
+          secretKey: ${{ secrets.KODO_SECRET_KEY }}
+          bucket: ${{ secrets.KODO_BUCKET }}
+          domain: ${{ secrets.KODO_DOMAIN }}
+          zone: ${{ secrets.KODO_ZONE }}
+          callback: ${{ secrets.OSS_CALLBACK }}
+          assets: |
+            *.zip:models/aigcpanel-server-musetalk-${{ env.DIST_FILE_NAME }}/
+
+      - name: Upload Oss
+        if: vars.UPLOAD_TYPE == 'oss'
+        uses: modstart/github-oss-action@master
+        with:
+          title: ${{ github.event.head_commit.message }}
+          key-id: ${{ secrets.OSS_KEY_ID }}
+          key-secret: ${{ secrets.OSS_KEY_SECRET }}
+          region: ${{ secrets.OSS_REGION }}
+          bucket: ${{ secrets.OSS_BUCKET }}
+          callback: ${{ secrets.OSS_CALLBACK }}
+          assets: |
+            *.zip:models/aigcpanel-server-musetalk-${{ env.DIST_FILE_NAME }}/
+
+
