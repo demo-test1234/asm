@@ -10,13 +10,7 @@ RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-lat
     /bin/bash /tmp/miniconda.sh -b -p $CONDA_DIR && \
     rm /tmp/miniconda.sh && \
     conda clean -afy
-
-#COPY Miniconda3-latest-Linux-x86_64.sh /tmp/miniconda.sh
-#RUN chmod +x /tmp/miniconda.sh && \
-#    /bin/bash /tmp/miniconda.sh -b -p $CONDA_DIR && \
-#    rm /tmp/miniconda.sh && \
-#    conda clean -afy
-
+RUN conda --version
 SHELL ["/bin/bash", "-c"]
 ADD . /app
 WORKDIR /app
@@ -35,13 +29,6 @@ RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-lat
     /bin/bash /tmp/miniconda.sh -b -p $CONDA_DIR && \
     rm /tmp/miniconda.sh && \
     conda clean -afy
-
-#COPY Miniconda3-latest-Linux-x86_64.sh /tmp/miniconda.sh
-#RUN chmod +x /tmp/miniconda.sh && \
-#    /bin/bash /tmp/miniconda.sh -b -p $CONDA_DIR && \
-#    rm /tmp/miniconda.sh && \
-#    conda clean -afy
-
 RUN conda --version
 SHELL ["/bin/bash", "-c"]
 

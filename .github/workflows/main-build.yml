@@ -24,17 +24,22 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: docker buildx
+      - name: docker setup
         if: runner.os == 'Linux'
         uses: docker/setup-buildx-action@v3
 
-      - name: docker login
+      - name: docker build
         if: runner.os == 'Linux'
         uses: docker/build-push-action@v6
         with:
           load: false
           tags: aigcpanel-server-musetalk:latest
           push: false
+
+      - name: docker check
+        if: runner.os == 'Linux'
+        run: |
+          sudo docker images
 
       - name: Cert Prepare (macOS)
         if: runner.os == 'macOS'
@@ -73,11 +78,6 @@ jobs:
           activate-environment: "test"
           python-version: 3.8
           auto-activate-base: false
-
-      - name: docker check
-        if: runner.os == 'Linux'
-        run: |
-          sudo docker images
 
       - name: Build
         if: runner.os == 'macOS'

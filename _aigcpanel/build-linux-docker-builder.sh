@@ -48,11 +48,13 @@ mv scripts/__pycache__/inference.cpython-310.pyc scripts/inference.pyc
 # 压缩环境
 conda install -c conda-forge conda-pack
 conda-pack -p ./_aienv -o /tmp/env.tar
-rm -rfv ./_aienv
+mv ./_aienv /tmp/_aienv_old
 mkdir ./_aienv
 cd ./_aienv
 tar xf /tmp/env.tar
 ./_aienv/bin/conda-unpack
+du -sh /tmp/_aienv_old
+du -sh ./_aienv
 # 压缩环境
 
 # 清除文件
@@ -78,8 +80,8 @@ echo "VERSION_ARCH: ${VERSION_ARCH}"
 #chmod +x binary/ffmpeg
 #curl -o binary/ffprobe "https://modstart-lib-public.oss-cn-shanghai.aliyuncs.com/ffprobe/ffprobe-${VERSION_ARCH}"
 #chmod +x binary/ffprobe
-rm -rfv "_aigcpanel/build*"
-rm -rfv "_aigcpanel/config.json"
+rm -rfv "_aigcpanel/build*" || true
+rm -rfv "_aigcpanel/config.json" || true
 #zip -rv "./aigcpanel-server-musetalk-${VERSION}.zip" *
 # 打包服务
 
