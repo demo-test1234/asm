@@ -1,6 +1,7 @@
 {
   "name": "server-MuseTalk",
-  "version": "0.2.0",
+  "cloudName": "CloudMuseTalk",
+  "version": "0.3.0",
   "title": "MuseTalk模型",
   "description": "基于MuseTalk模型的模型，支持视频合成功能",
   "platformName": "__ENV__",
@@ -13,8 +14,7 @@
     "entryArgs": [
       "-u",
       "-m",
-      "scripts.inference",
-      "--inference_config",
+      "aigcpanelrun",
       "${CONFIG}"
     ],
     "envs": [

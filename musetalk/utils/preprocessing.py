@@ -35,9 +35,10 @@ def resize_landmark(landmark, w, h, new_w, new_h):
 def read_imgs(img_list):
     frames = []
     print('reading images...')
-    for img_path in tqdm(img_list):
+    for img_path in tqdm(img_list, ascii=True):
         frame = cv2.imread(img_path)
         frames.append(frame)
+    print('done reading images')
     return frames
 
 def get_landmark_and_bbox(img_list,upperbondrange =0):
@@ -52,7 +53,7 @@ def get_landmark_and_bbox(img_list,upperbondrange =0):
         print('get key_landmark and face bounding boxes with the default value')
     average_range_minus = []
     average_range_plus = []
-    for fb in tqdm(batches):
+    for fb in tqdm(batches, ascii=True):
         results = inference_topdown(model, np.asarray(fb)[0])
         results = merge_data_samples(results)
         keypoints = results.pred_instances.keypoints
@@ -89,7 +90,7 @@ def get_landmark_and_bbox(img_list,upperbondrange =0):
             else:
                 coords_list += [f_landmark]
     
-    print("********************************************bbox_shift parameter adjustment**********************************************************")
+    print("******************************************** bbox_shift parameter adjustment**********************************************************")
     print(f"Total frame:「{len(frames)}」 Manually adjust range : [ -{int(sum(average_range_minus) / len(average_range_minus))}~{int(sum(average_range_plus) / len(average_range_plus))} ] , the current value: {upperbondrange}")
     print("*************************************************************************************************************************************")
     return coords_list,frames
