@@ -16,14 +16,20 @@ def root():
 def rootDir(path):
     return root() + os.sep + path
 
+
 def binaryPath(path):
     p = rootDir(path)
     if sys.platform == 'win32':
         p += '.exe'
     return p
 
+
 def datetimeRandomName():
     return datetime.datetime.now().strftime('%Y%m%d%H%M%S_') + str(random.randint(1000, 9999))
+
+
+def randomString(length=32):
+    return ''.join(random.choices('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', k=length))
 
 
 def datetimeRandomNameParseTimestamp(name):
