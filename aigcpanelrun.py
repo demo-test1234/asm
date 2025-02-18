@@ -5,6 +5,7 @@ import _aigcpanel.base.file
 import _aigcpanel.base.result
 import _aigcpanel.base.util
 import _aigcpanel.base.log
+import _aigcpanel.base.sys
 
 if len(sys.argv) != 2:
     print("Usage: python -u -m aigcpanelrun <config_url>")
@@ -27,9 +28,10 @@ from musetalk.utils.blending import get_image
 from musetalk.utils.utils import load_all_model
 import shutil
 
-useCuda = torch.cuda.is_available()
+useCuda = _aigcpanel.base.sys.cudaIsEnable()
 _aigcpanel.base.log.info('开始运行', {'UseCuda': useCuda})
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+_aigcpanel.base.log.info('ROOT_DIR', ROOT_DIR)
 os.environ['XDG_CACHE_HOME'] = os.path.join(ROOT_DIR, '_cache')
 os.environ["MODELSCOPE_CACHE"] = os.path.join(ROOT_DIR, '_cache', 'modelscope')
 sys.path.append('{}/binary'.format(ROOT_DIR))
@@ -41,7 +43,6 @@ timesteps = torch.tensor([0], device=device)
 
 stepCurrent = 1
 stepTotal = 7
-
 
 def stepPrint():
     global stepCurrent
@@ -55,7 +56,17 @@ def main():
     resultDir = "results/"
     resultFps = 25
     use_saved_coord = False
-    batch_size = 8
+    batch_size = 1
+    if _aigcpanel.base.sys.cudaIsEnable():
+        _aigcpanel.base.log.info('cudaGpuSize', _aigcpanel.base.sys.cudaGpuSize())
+        if _aigcpanel.base.sys.cudaGpuSize() > 32:
+            batch_size = 8
+        elif _aigcpanel.base.sys.cudaGpuSize() > 16:
+            batch_size = 4
+        elif _aigcpanel.base.sys.cudaGpuSize() > 8:
+            batch_size = 2
+
+    _aigcpanel.base.log.info('batch_size', batch_size)
 
     if not os.path.exists(outputRoot):
         os.makedirs(outputRoot)
@@ -159,7 +170,7 @@ def main():
 
     _aigcpanel.base.log.info('input_latent_list prepare')
     input_latent_list = []
-    for bbox, frame in tqdm(zip(coord_list, frame_list), ascii=True):
+    for bbox, frame in tqdm(zip(coord_list, frame_list), total=len(coord_list)):
         if bbox == coord_placeholder:
             continue
         x1, y1, x2, y2 = bbox
@@ -177,15 +188,14 @@ def main():
     stepPrint()
     _aigcpanel.base.log.info("start inference")
     video_num = len(whisper_chunks)
+    _aigcpanel.base.log.info("start datagen")
     gen = datagen(whisper_chunks, input_latent_list_cycle, batch_size)
+    _aigcpanel.base.log.info("start model")
     res_frame_list = []
-    for i, (whisper_batch, latent_batch) in enumerate(
-            tqdm(gen, total=int(np.ceil(float(video_num) / batch_size)), ascii=True)):
-
+    for i, (whisper_batch, latent_batch) in enumerate(tqdm(gen, total=int(np.ceil(float(video_num) / batch_size)))):
         tensor_list = [torch.FloatTensor(arr) for arr in whisper_batch]
         audio_feature_batch = torch.stack(tensor_list).to(unet.device)  # torch, B, 5*N,384
         audio_feature_batch = pe(audio_feature_batch)
-
         pred_latents = unet.model(latent_batch, timesteps, encoder_hidden_states=audio_feature_batch).sample
         recon = vae.decode_latents(pred_latents)
         for res_frame in recon:
@@ -194,7 +204,7 @@ def main():
     ############################################## pad to full image ##############################################
     stepPrint()
     _aigcpanel.base.log.info("pad talking image to original video")
-    for i, res_frame in enumerate(tqdm(res_frame_list, ascii=True)):
+    for i, res_frame in enumerate(tqdm(res_frame_list)):
         bbox = coord_list_cycle[i % (len(coord_list_cycle))]
         ori_frame = copy.deepcopy(frame_list_cycle[i % (len(frame_list_cycle))])
         x1, y1, x2, y2 = bbox
