@@ -4,6 +4,7 @@ import sys
 import _aigcpanel.base.file
 import _aigcpanel.base.result
 import _aigcpanel.base.util
+import _aigcpanel.base.log
 
 if len(sys.argv) != 2:
     print("Usage: python -u -m aigcpanelrun <config_url>")
@@ -27,7 +28,7 @@ from musetalk.utils.utils import load_all_model
 import shutil
 
 useCuda = torch.cuda.is_available()
-print('开始运行', {'UseCuda': useCuda})
+_aigcpanel.base.log.info('开始运行', {'UseCuda': useCuda})
 ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 os.environ['XDG_CACHE_HOME'] = os.path.join(ROOT_DIR, '_cache')
 os.environ["MODELSCOPE_CACHE"] = os.path.join(ROOT_DIR, '_cache', 'modelscope')
@@ -45,7 +46,7 @@ stepTotal = 7
 def stepPrint():
     global stepCurrent
     global stepTotal
-    print(f'===== 视频合成MuseTalk {stepCurrent}/{stepTotal} =====')
+    _aigcpanel.base.log.info(f'===== 视频合成MuseTalk {stepCurrent}/{stepTotal} =====')
     stepCurrent += 1
 
 
@@ -58,15 +59,15 @@ def main():
 
     if not os.path.exists(outputRoot):
         os.makedirs(outputRoot)
-        print(f"create dir {outputRoot}")
+        _aigcpanel.base.log.info(f"create dir {outputRoot}")
     if not os.path.exists(resultDir):
         os.makedirs(resultDir)
-        print(f"create dir {resultDir}")
+        _aigcpanel.base.log.info(f"create dir {resultDir}")
 
     config = _aigcpanel.base.file.contentJson(sys.argv[1])
-    print('config', config, sys.argv)
+    _aigcpanel.base.log.info('config', config, sys.argv)
     if not 'id' in config:
-        print('config.id not found')
+        _aigcpanel.base.log.info('config.id not found')
         exit(-1)
     _aigcpanel.base.result.result(config, {'UseCuda': useCuda})
     if not 'mode' in config:
@@ -78,9 +79,9 @@ def main():
     audio_path = os.path.join(ROOT_DIR, outputRoot, "audio_" + str(int(time.time())) + ".wav")
     bbox_shift = modelConfig['box']
 
-    print('video_path', video_path)
-    print('audio_path', audio_path)
-    print('bbox_shift', bbox_shift)
+    _aigcpanel.base.log.info('video_path', video_path)
+    _aigcpanel.base.log.info('audio_path', audio_path)
+    _aigcpanel.base.log.info('bbox_shift', bbox_shift)
 
     modelConfig['_video'] = _aigcpanel.base.file.localCache(modelConfig['video'])
     modelConfig['_audio'] = _aigcpanel.base.file.localCache(modelConfig['audio'])
@@ -90,39 +91,39 @@ def main():
     input_basename = os.path.basename(video_path).split('.')[0]
     audio_basename = os.path.basename(audio_path).split('.')[0]
     output_basename = f"{input_basename}_{audio_basename}"
-    print('output_basename', output_basename)
+    _aigcpanel.base.log.info('output_basename', output_basename)
     result_img_save_path = os.path.join(resultDir, output_basename)
     crop_coord_save_path = os.path.join(result_img_save_path, input_basename + ".pkl")
     save_dir_full = None
 
     if os.path.exists(result_img_save_path):
         shutil.rmtree(result_img_save_path)
-        print(f"delete dir {result_img_save_path}")
+        _aigcpanel.base.log.info(f"delete dir {result_img_save_path}")
 
     if os.path.exists(crop_coord_save_path):
         shutil.rmtree(crop_coord_save_path)
-        print(f"delete dir {crop_coord_save_path}")
+        _aigcpanel.base.log.info(f"delete dir {crop_coord_save_path}")
 
     os.makedirs(result_img_save_path, exist_ok=True)
 
-    print('result_img_save_path', result_img_save_path)
-    print('crop_coord_save_path', crop_coord_save_path)
+    _aigcpanel.base.log.info('result_img_save_path', result_img_save_path)
+    _aigcpanel.base.log.info('crop_coord_save_path', crop_coord_save_path)
 
     resultMp4Path = os.path.join(outputRoot, resultMp4File)
-    print('resultMp4Path', resultMp4Path)
+    _aigcpanel.base.log.info('resultMp4Path', resultMp4Path)
 
     if os.path.exists(resultMp4Path):
-        print(f'delete file {resultMp4Path}')
+        _aigcpanel.base.log.info(f'delete file {resultMp4Path}')
         os.remove(resultMp4Path)
 
     stepPrint()
-    print('extract frames from source video')
+    _aigcpanel.base.log.info('extract frames from source video')
     ############################################## extract frames from source video ##############################################
     if get_file_type(video_path) == "video":
         save_dir_full = os.path.join(resultDir, input_basename)
         if os.path.exists(save_dir_full):
             shutil.rmtree(save_dir_full)
-            print(f"delete dir {save_dir_full}")
+            _aigcpanel.base.log.info(f"delete dir {save_dir_full}")
         os.makedirs(save_dir_full, exist_ok=True)
         cmd = f"ffmpeg -v fatal -i {video_path} -start_number 0 {save_dir_full}/%08d.png"
         os.system(cmd)
@@ -133,30 +134,30 @@ def main():
         input_img_list = sorted(input_img_list, key=lambda x: int(os.path.splitext(os.path.basename(x))[0]))
         fps = resultFps
 
-    # print(input_img_list)
+    # _aigcpanel.base.log.info(input_img_list)
     stepPrint()
-    print('extract audio feature')
+    _aigcpanel.base.log.info('extract audio feature')
     ############################################## extract audio feature ##############################################
     whisper_feature = audio_processor.audio2feat(audio_path)
     whisper_chunks = audio_processor.feature2chunks(feature_array=whisper_feature, fps=fps)
 
     stepPrint()
-    print('preprocess input image')
+    _aigcpanel.base.log.info('preprocess input image')
     ############################################## preprocess input image  ##############################################
     if os.path.exists(crop_coord_save_path) and use_saved_coord:
-        print("using extracted coordinates")
+        _aigcpanel.base.log.info("using extracted coordinates")
         with open(crop_coord_save_path, 'rb') as f:
             coord_list = pickle.load(f)
         frame_list = read_imgs(input_img_list)
     else:
-        print("extracting landmarks... time consuming")
+        _aigcpanel.base.log.info("extracting landmarks... time consuming")
         coord_list, frame_list = get_landmark_and_bbox(input_img_list, bbox_shift)
-        print("save extracted coordinates")
+        _aigcpanel.base.log.info("save extracted coordinates")
         with open(crop_coord_save_path, 'wb') as f:
             pickle.dump(coord_list, f)
-        print("save extracted coordinates done")
+        _aigcpanel.base.log.info("save extracted coordinates done")
 
-    print('input_latent_list prepare')
+    _aigcpanel.base.log.info('input_latent_list prepare')
     input_latent_list = []
     for bbox, frame in tqdm(zip(coord_list, frame_list), ascii=True):
         if bbox == coord_placeholder:
@@ -174,7 +175,7 @@ def main():
     ############################################## inference batch by batch ##############################################
 
     stepPrint()
-    print("start inference")
+    _aigcpanel.base.log.info("start inference")
     video_num = len(whisper_chunks)
     gen = datagen(whisper_chunks, input_latent_list_cycle, batch_size)
     res_frame_list = []
@@ -192,7 +193,7 @@ def main():
 
     ############################################## pad to full image ##############################################
     stepPrint()
-    print("pad talking image to original video")
+    _aigcpanel.base.log.info("pad talking image to original video")
     for i, res_frame in enumerate(tqdm(res_frame_list, ascii=True)):
         bbox = coord_list_cycle[i % (len(coord_list_cycle))]
         ori_frame = copy.deepcopy(frame_list_cycle[i % (len(frame_list_cycle))])
@@ -200,34 +201,34 @@ def main():
         try:
             res_frame = cv2.resize(res_frame.astype(np.uint8), (x2 - x1, y2 - y1))
         except:
-            print(bbox)
+            _aigcpanel.base.log.info(bbox)
             continue
 
         combine_frame = get_image(ori_frame, res_frame, bbox)
         cv2.imwrite(f"{result_img_save_path}/{str(i).zfill(8)}.png", combine_frame)
 
     cmd_img2video = f"ffmpeg -y -v fatal -r {fps} -f image2 -i {result_img_save_path}/%08d.png -vcodec libx264 -vf format=rgb24,scale=out_color_matrix=bt709,format=yuv420p -crf 18 temp.mp4"
-    print('cmd_img2video', cmd_img2video)
+    _aigcpanel.base.log.info('cmd_img2video', cmd_img2video)
     os.system(cmd_img2video)
 
     stepPrint()
     cmd_combine_audio = f"ffmpeg -y -v fatal -i {audio_path} -i temp.mp4 {resultMp4Path}"
-    print('cmd_combine_audio', cmd_combine_audio)
+    _aigcpanel.base.log.info('cmd_combine_audio', cmd_combine_audio)
     os.system(cmd_combine_audio)
 
     os.remove("temp.mp4")
     resultMp4Path = os.path.join(ROOT_DIR, resultMp4Path)
-    print(f"ResultSaveTo:{resultMp4Path}")
+    _aigcpanel.base.log.info(f"ResultSaveTo:{resultMp4Path}")
     _aigcpanel.base.result.result(config, {'url': _aigcpanel.base.file.urlForResult(config, resultMp4Path)})
 
-    print(f'clean {video_path}')
+    _aigcpanel.base.log.info(f'clean {video_path}')
     os.remove(video_path)
-    print(f'clean {audio_path}')
+    _aigcpanel.base.log.info(f'clean {audio_path}')
     os.remove(audio_path)
-    print(f'clean {result_img_save_path}')
+    _aigcpanel.base.log.info(f'clean {result_img_save_path}')
     shutil.rmtree(result_img_save_path)
     if save_dir_full is not None:
-        print(f'clean {save_dir_full}')
+        _aigcpanel.base.log.info(f'clean {save_dir_full}')
         shutil.rmtree(save_dir_full)
 
 
