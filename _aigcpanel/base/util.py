@@ -1,4 +1,4 @@
-import sys, os, datetime, random, platform, shutil
+import sys, os, datetime, random, platform, shutil, string
 
 
 def banner(param: dict):
@@ -29,7 +29,11 @@ def datetimeRandomName():
 
 
 def randomString(length=32):
-    return ''.join(random.choices('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789', k=length))
+    # a-z, A-Z, 0-9
+    alphabet = string.ascii_letters + string.digits
+    # 生成随机字节
+    random_bytes = os.urandom(length)
+    return ''.join(alphabet[b % len(alphabet)] for b in random_bytes)
 
 
 def datetimeRandomNameParseTimestamp(name):
