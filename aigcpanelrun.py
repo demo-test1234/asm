@@ -44,6 +44,7 @@ timesteps = torch.tensor([0], device=device)
 stepCurrent = 1
 stepTotal = 7
 
+
 def stepPrint():
     global stepCurrent
     global stepTotal
@@ -59,11 +60,11 @@ def main():
     batch_size = 1
     if _aigcpanel.base.sys.cudaIsEnable():
         _aigcpanel.base.log.info('cudaGpuSize', _aigcpanel.base.sys.cudaGpuSize())
-        if _aigcpanel.base.sys.cudaGpuSize() > 32:
+        if _aigcpanel.base.sys.cudaGpuSize() > 31:
             batch_size = 8
-        elif _aigcpanel.base.sys.cudaGpuSize() > 16:
+        elif _aigcpanel.base.sys.cudaGpuSize() > 15:
             batch_size = 4
-        elif _aigcpanel.base.sys.cudaGpuSize() > 8:
+        elif _aigcpanel.base.sys.cudaGpuSize() > 7:
             batch_size = 2
 
     _aigcpanel.base.log.info('batch_size', batch_size)
@@ -228,8 +229,13 @@ def main():
 
     os.remove("temp.mp4")
     resultMp4Path = os.path.join(ROOT_DIR, resultMp4Path)
-    _aigcpanel.base.log.info(f"ResultSaveTo:{resultMp4Path}")
-    _aigcpanel.base.result.result(config, {'url': _aigcpanel.base.file.urlForResult(config, resultMp4Path)})
+
+    durationCmd = f"ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 {resultMp4Path}"
+    duration = float(os.popen(durationCmd).read())
+    _aigcpanel.base.result.result(config, {
+        'Duration': duration,
+        'url': _aigcpanel.base.file.urlForResult(config, resultMp4Path)
+    })
 
     _aigcpanel.base.log.info(f'clean {video_path}')
     os.remove(video_path)
