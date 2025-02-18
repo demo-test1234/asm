@@ -36,6 +36,8 @@ wget https://www.adrianbulat.com/downloads/python-fan/s3fd-619a316812.pth -P _ca
 # 构建
 #python -m py_compile app.py
 #mv __pycache__/app.cpython-310.pyc app.pyc
+python -m py_compile aigcpanelrun.py
+mv __pycache__/aigcpanelrun.cpython-310.pyc aigcpanelrun.pyc
 python -m py_compile scripts/inference.py
 mv scripts/__pycache__/inference.cpython-310.pyc scripts/inference.pyc
 # 构建
@@ -47,6 +49,7 @@ mv scripts/__pycache__/inference.cpython-310.pyc scripts/inference.pyc
 
 # 清除文件
 rm -rfv app.py || true
+rm -rfv aigcpanelrun.py || true
 rm -rfv scripts/inference.py || true
 rm -rfv asset || true
 rm -rfv *.md || true

@@ -45,6 +45,8 @@ Invoke-WebRequest -Uri "https://www.adrianbulat.com/downloads/python-fan/s3fd-61
 # 构建
 #python -m py_compile app.py
 #Move-Item -Path "__pycache__\app.cpython-310.pyc" -Destination "app.pyc"
+python -m py_compile aigcpanelrun.py
+Move-Item -Path "__pycache__\aigcpanelrun.cpython-310.pyc" -Destination "aigcpanelrun.pyc"
 python -m py_compile scripts/inference.py
 Move-Item -Path "scripts\__pycache__\inference.cpython-310.pyc" -Destination "scripts\inference.pyc"
 # 构建
@@ -55,6 +57,7 @@ Move-Item -Path "scripts\__pycache__\inference.cpython-310.pyc" -Destination "sc
 
 # 清除文件
 Remove-Item -Path "app.py" -Force -ErrorAction SilentlyContinue
+Remove-Item -Path "aigcpanelrun.py" -Force -ErrorAction SilentlyContinue
 Remove-Item -Path "scripts/inference.py" -Force -ErrorAction SilentlyContinue
 Remove-Item -Recurse -Force asset -ErrorAction SilentlyContinue -Verbose
 Remove-Item -Recurse -Force requirements.txt -ErrorAction SilentlyContinue
